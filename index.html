@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+<body>
+<p>This is a <blink>blink</blink> page.
+<script type="text/javascript">
+  function blink() {
+    var blinks = document.getElementsByTagName('blink');
+    for (var i = blinks.length - 1; i >= 0; --i) {
+      var s = blinks[i].style;
+      s.visibility = (s.visibility === 'visible') ? 'hidden' : 'visible';
+    }
+    window.setTimeout(blink, 500);
+  }
+  blink();
+</script>
