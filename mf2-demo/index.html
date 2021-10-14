@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <script src="compiler.js"></script>
+  <script src="mf.js"></script>
+  <script src="xliff.js"></script>
+  <link href="prism.css" rel="stylesheet" />
+  <!--script src="prism.js"></script-->
+
+  <style>
+    main {
+      display: flex;
+      align-items: stretch;
+      min-height: 90vh;
+    }
+    main > * {
+      flex: 1;
+    }
+
+    #col1 {
+      display: flex;
+      flex-direction: column;
+    }
+    #input {
+      flex: 1;
+      margin: 0.5em 0;
+      width: 90%;
+      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+      font-size: 1em;
+    }
+
+    #model {
+      white-space: pre-wrap;
+    }
+
+    #col3 > * {
+      margin-left: 10%;
+    }
+    #res {
+      white-space: pre;
+    }
+  </style>
+
+  <main>
+    <div id="col1">
+      <form>
+        <label>
+          <input type="radio" name="format" value="mf1" checked />
+          MessageFormat 1
+        </label>
+        <label>
+          <input type="radio" name="format" value="fluent" />
+          Fluent
+        </label>
+      </form>
+
+      <textarea id="input"></textarea>
+    </div>
+
+    <div id="col2">
+      <form>
+        <label>
+          <input type="radio" name="model" value="dm" checked />
+          MF2 Data model
+        </label>
+        <label>
+          <input type="radio" name="model" value="xliff" />
+          XLIFF
+        </label>
+      </form>
+
+      <pre
+        class="language-js"
+      ><code id="model" class="language-js"></code></pre>
+    </div>
+
+    <div id="col3">
+      <form id="msg-id-form"></form>
+      <label>var <input id="var" value="42" /></label>
+      <div id="res"></div>
+    </div>
+  </main>
+
+  <script>
+    const { compileFluent, compileMF1 } = Compiler;
+    const { MessageFormat, fluentRuntime, mf1Runtime } = MF;
+    const { mf2xliff, stringify } = XLIFF;
+
+    const locale = 'en';
+    const input = document.getElementById('input');
+    const modelEl = document.getElementById('model');
+    const varEl = document.getElementById('var');
+    const res = document.getElementById('res');
+    const msgIdForm = document.getElementById('msg-id-form');
+
+    function onChange() {
+      try {
+        let ast, runtime;
+        const format = document.querySelector('input[name="format"]:checked');
+        switch (format?.value) {
+          case 'mf1':
+            ast = compileMF1({ msg: input.value }, { id: 'res', locale });
+            runtime = mf1Runtime;
+            break;
+          case 'fluent':
+            ast = compileFluent(input.value, { id: 'res', locale });
+            runtime = fluentRuntime;
+            break;
+          default:
+            throw new Error(`Invalid format: ${format?.value}`);
+        }
+
+        let modelSrc;
+        const model = document.querySelector('input[name="model"]:checked');
+        switch (model?.value) {
+          case 'dm':
+            modelSrc = JSON.stringify(ast, null, 2);
+            break;
+          case 'xliff':
+            try {
+              modelSrc = stringify(mf2xliff(ast));
+            } catch (error) {
+              modeSrc = String(error);
+            }
+            break;
+          default:
+            modelSrc = String(new Error(`Invalid model: ${model?.value}`));
+        }
+        modelEl.innerText = modelSrc;
+
+        const mf = new MessageFormat(locale, { runtime });
+        mf.addResources(ast);
+
+        const keys = Object.keys(ast.entries);
+        const prev = msgIdForm.querySelector('input:checked')?.value;
+        const key0 = prev && keys.includes(prev) ? prev : keys[0];
+        res.innerText = mf.format('res', [key0], { var: varEl.value });
+
+        if (keys.length === 1) {
+          msgIdForm.innerHTML = '';
+        } else {
+          msgIdForm.innerHTML = keys
+            .map(
+              key =>
+                `<label><input type="radio" name="msg-id" value="${key}" ${
+                  key === key0 ? 'checked' : ''
+                } /> ${key}</label>`
+            )
+            .join('\n');
+          for (const radio of msgIdForm.querySelectorAll('input'))
+            radio.addEventListener('input', function () {
+              res.innerText = mf.format('res', [this.value], {
+                var: varEl.value
+              });
+            });
+        }
+      } catch (error) {
+        modelEl.innerText = String(error);
+        res.innerText = '';
+      }
+      //Prism.highlightAll();
+    }
+
+    input.addEventListener('input', onChange);
+    varEl.addEventListener('input', onChange);
+    for (const radio of document.querySelectorAll('input[name="format"]'))
+      radio.addEventListener('input', function () {
+        switch (this.value) {
+          case 'mf1':
+            input.value = '{var, plural, one{b} other{f} =42{omg42}}';
+            break;
+          case 'fluent':
+            input.value = `\
+msg = Foo { $var }
+ref = This is the { msg }
+select = {$var ->
+  [a] A
+ *[b] B
+}`;
+            break;
+          default:
+            throw new Error(`Invalid format: ${format?.value}`);
+        }
+        onChange();
+      });
+    for (const radio of document.querySelectorAll('input[name="model"]'))
+      radio.addEventListener('input', onChange);
+
+    onChange();
+  </script>
+</html>
