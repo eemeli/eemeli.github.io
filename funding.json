@@ -1,0 +1,82 @@
+{
+  "version": "v1.0.0",
+  "entity": {
+    "type": "individual",
+    "role": "owner",
+    "name": "Eemeli Aro",
+    "email": "eemeli@gmail.com",
+    "description": "I'm working to improve human-computer relations through better configuration languages and localization. I maintain a bunch of open-source libraries and tools, and I work on all sorts of standards and specifications.",
+    "webpageUrl": {
+      "url": "https://eemeli.org/"
+    }
+  },
+  "projects": [
+    {
+      "guid": "yaml",
+      "name": "yaml",
+      "description": "yaml is a definitive JavaScript library for YAML, the human friendly data serialization standard.",
+      "webpageUrl": {
+        "url": "https://eemeli.org/yaml/"
+      },
+      "repositoryUrl": {
+        "url": "https://github.com/eemeli/yaml"
+      },
+      "licenses": ["spdx:ISC"],
+      "tags": [
+        "communication",
+        "data",
+        "developer-tools",
+        "development",
+        "devops",
+        "information-management",
+        "javascript",
+        "programming",
+        "storage"
+      ]
+    }
+  ],
+  "funding": {
+    "channels": [
+      {
+        "guid": "github",
+        "type": "gateway",
+        "address": "https://github.com/sponsors/eemeli",
+        "description": "GitHub Sponsors"
+      },
+      {
+        "guid": "paypal",
+        "type": "gateway",
+        "address": "https://paypal.me/aroeemeli",
+        "description": "PayPal"
+      },
+      {
+        "guid": "sepa",
+        "type": "bank",
+        "description": "Please contact me for SEPA bank transfer details."
+      }
+    ],
+    "plans": [
+      {
+        "guid": "gh-link",
+        "status": "active",
+        "name": "GitHub Sponsors - Link",
+        "description": "Include a link with your logo or name in the yaml README.",
+        "amount": 25,
+        "currency": "USD",
+        "frequency": "monthly",
+        "channels": ["github"]
+      },
+      {
+        "guid": "gh-priority",
+        "status": "active",
+        "name": "GitHub Sponsors - Priority",
+        "description": "Have your bug reports prioritized, and include a link with your logo or name in the yaml README.",
+        "amount": 100,
+        "currency": "USD",
+        "frequency": "monthly",
+        "channels": ["github"]
+      }
+    ],
+    "history": []
+  }
+}
