@@ -16,10 +16,11 @@
       "name": "yaml",
       "description": "yaml is a definitive JavaScript library for YAML, the human friendly data serialization standard.",
       "webpageUrl": {
-        "url": "https://eemeli.org/yaml/"
+        "url": "https://eemeli.org/yaml"
       },
       "repositoryUrl": {
-        "url": "https://github.com/eemeli/yaml"
+        "url": "https://github.com/eemeli/yaml",
+        "wellKnown": "https://github.com/eemeli/yaml/blob/main/.well-known/funding-manifest-urls"
       },
       "licenses": ["spdx:ISC"],
       "tags": [
@@ -39,13 +40,13 @@
     "channels": [
       {
         "guid": "github",
-        "type": "gateway",
+        "type": "payment-provider",
         "address": "https://github.com/sponsors/eemeli",
         "description": "GitHub Sponsors"
       },
       {
         "guid": "paypal",
-        "type": "gateway",
+        "type": "payment-provider",
         "address": "https://paypal.me/aroeemeli",
         "description": "PayPal"
       },
